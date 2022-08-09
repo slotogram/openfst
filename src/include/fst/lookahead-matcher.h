@@ -194,12 +194,12 @@ class TrivialLookAheadMatcher
       : matcher_(fst, match_type) {}
 
   // This makes a copy of the FST.
-  TrivialLookAheadMatcher(const TrivialLookAheadMatcher &lmatcher,
+  TrivialLookAheadMatcher(const TrivialLookAheadMatcher<M> &lmatcher,
                           bool safe = false)
       : matcher_(lmatcher.matcher_, safe) {}
 
-  TrivialLookAheadMatcher *Copy(bool safe = false) const override {
-    return new TrivialLookAheadMatcher(*this, safe);
+  TrivialLookAheadMatcher<M> *Copy(bool safe = false) const override {
+    return new TrivialLookAheadMatcher<M>(*this, safe);
   }
 
   MatchType Type(bool test) const override { return matcher_.Type(test); }
@@ -283,15 +283,15 @@ class ArcLookAheadMatcher : public LookAheadMatcherBase<typename M::FST::Arc> {
         state_(kNoStateId) {}
 
   // This makes a copy of the FST.
-  ArcLookAheadMatcher(const ArcLookAheadMatcher &lmatcher, bool safe = false)
+  ArcLookAheadMatcher(const ArcLookAheadMatcher<M, flags> &lmatcher, bool safe = false)
       : matcher_(lmatcher.matcher_, safe),
         fst_(matcher_.GetFst()),
         lfst_(lmatcher.lfst_),
         state_(kNoStateId) {}
 
   // General matcher methods.
-  ArcLookAheadMatcher *Copy(bool safe = false) const override {
-    return new ArcLookAheadMatcher(*this, safe);
+  ArcLookAheadMatcher<M, flags> *Copy(bool safe = false) const override {
+    return new ArcLookAheadMatcher<M, flags>(*this, safe);
   }
 
   MatchType Type(bool test) const override { return matcher_.Type(test); }
@@ -448,7 +448,7 @@ class LabelLookAheadMatcher
   using LookAheadMatcherBase<Arc>::ClearLookAheadPrefix;
   using LookAheadMatcherBase<Arc>::LookAheadPrefix;
   using LookAheadMatcherBase<Arc>::SetLookAheadPrefix;
-
+  
   static_assert(!(flags & kInputLookAheadMatcher) !=
                     !(flags & kOutputLookAheadMatcher),
                 "Must include precisely one of kInputLookAheadMatcher and "
@@ -478,7 +478,7 @@ class LabelLookAheadMatcher
   }
 
   // This makes a copy of the FST.
-  LabelLookAheadMatcher(const LabelLookAheadMatcher &lmatcher,
+  LabelLookAheadMatcher(const LabelLookAheadMatcher<M, flags, Accum, R> &lmatcher,
                         bool safe = false)
       : matcher_(lmatcher.matcher_, safe),
         lfst_(lmatcher.lfst_),
@@ -488,7 +488,7 @@ class LabelLookAheadMatcher
         state_(kNoStateId),
         error_(lmatcher.error_) {}
 
-  LabelLookAheadMatcher *Copy(bool safe = false) const override {
+  LabelLookAheadMatcher<M, flags, Accum, R> *Copy(bool safe = false) const override {
     return new LabelLookAheadMatcher(*this, safe);
   }
 
@@ -566,7 +566,7 @@ class LabelLookAheadMatcher
 
   template <class LFST>
   void InitLookAheadFst(const LFST &fst, bool copy = false) {
-    lfst_ = &fst;
+    lfst_ = static_cast<const Fst<Arc> *>(&fst); //&fst
     if (label_reachable_) {
       const bool reach_input = Type(false) == MATCH_OUTPUT;
       label_reachable_->ReachInit(fst, reach_input, copy);
@@ -615,7 +615,7 @@ template <class LFST>
 inline bool LabelLookAheadMatcher<M, flags, Accumulator,
                                   Reachable>::LookAheadFst(const LFST &fst,
                                                            StateId s) {
-  if (&fst != lfst_) InitLookAheadFst(fst);
+  if (static_cast<const Fst<Arc> *>(&fst) != lfst_) InitLookAheadFst(fst);
   ClearLookAheadWeight();
   ClearLookAheadPrefix();
   if (!label_reachable_) return true;
@@ -776,8 +776,8 @@ class LookAheadMatcher {
   explicit LookAheadMatcher(MatcherBase<Arc> *base)
       : base_(base), lookahead_(false) {}
 
-  LookAheadMatcher *Copy(bool safe = false) const {
-    return new LookAheadMatcher(*this, safe);
+  LookAheadMatcher<FST> *Copy(bool safe = false) const {
+    return new LookAheadMatcher<FST>(*this, safe);
   }
 
   MatchType Type(bool test) const { return base_->Type(test); }

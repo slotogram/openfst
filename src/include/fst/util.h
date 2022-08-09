@@ -34,6 +34,10 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+  #include <io.h>
+  #include <fcntl.h>
+#endif			 
 #include <fst/compat.h>
 #include <fst/types.h>
 #include <fst/log.h>
@@ -83,19 +87,6 @@ inline std::istream &ReadType(std::istream &strm, std::string *s) {
   return strm;
 }
 
-// Declares types that can be read from an input stream.
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::vector<T...> *c);
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::list<T...> *c);
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::set<T...> *c);
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::map<T...> *c);
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::unordered_map<T...> *c);
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::unordered_set<T...> *c);
 
 // Pair case.
 template <typename S, typename T>
@@ -135,35 +126,35 @@ std::istream &ReadType(std::istream &strm, std::array<T, N> *c) {
   return strm;
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::vector<T...> *c) {
+template <typename T, typename A>
+std::istream &ReadType(std::istream &strm, std::vector<T,A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::list<T...> *c) {
+template <typename T, typename A>
+std::istream &ReadType(std::istream &strm, std::list<T,A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::set<T...> *c) {
+template <typename T, typename L, typename A>
+std::istream &ReadType(std::istream &strm, std::set<T,L,A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::map<T...> *c) {
+template <typename K, typename V, typename L, typename A>
+std::istream &ReadType(std::istream &strm, std::map<K,V,L,A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::unordered_set<T...> *c) {
+template <typename T, typename H, typename E, typename A>
+std::istream &ReadType(std::istream &strm, std::unordered_set<T,H,E,A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
 
-template <class... T>
-std::istream &ReadType(std::istream &strm, std::unordered_map<T...> *c) {
+template <typename K, typename V, typename H, typename E, typename A>
+std::istream &ReadType(std::istream &strm, std::unordered_map<K,V,H,E,A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
@@ -192,25 +183,7 @@ inline std::ostream &WriteType(std::ostream &strm, const std::string &s) {
   return strm.write(s.data(), ns);
 }
 
-// Declares types that can be written to an output stream.
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::vector<T...> &c);
-
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::list<T...> &c);
-
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::set<T...> &c);
-
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::map<T...> &c);
-
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_map<T...> &c);
-
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_set<T...> &c);
 
 // Pair case.
 template <typename S, typename T>
@@ -244,33 +217,33 @@ std::ostream &WriteType(std::ostream &strm, const std::array<T, N> &c) {
   return internal::WriteSequence(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::vector<T...> &c) {
+template <typename T, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::vector<T,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::list<T...> &c) {
+template <typename T, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::list<T,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::set<T...> &c) {
+template <typename T, typename L, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::set<T,L,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::map<T...> &c) {
+template <typename K, typename V, typename L, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::map<K,V,L,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_map<T...> &c) {
+template <typename T, typename H, typename E, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::unordered_set<T,H,E,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
-template <typename... T>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_set<T...> &c) {
+template <typename K, typename V, typename H, typename E, typename A>
+std::ostream &WriteType(std::ostream &strm, const std::unordered_map<K,V,H,E,A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
@@ -453,6 +426,35 @@ class CompactSet {
   void operator=(const CompactSet &) = delete;
 };
 
+// Utilities for handling Windows newline conversion.
+
+inline void PrepareBinaryStdout() {
+  #ifdef _WIN32
+    _setmode(_fileno(stdout), O_BINARY);
+  #endif
+}
+
+inline void CheckBinaryStdout(std::ostream &strm) {
+  #ifdef _WIN32
+    if (strm.rdbuf() == std::cout.rdbuf()) {
+      _setmode(_fileno(stdout), O_BINARY);
+    }
+  #endif
+}
+
+inline void PrepareBinaryStdin() {
+  #ifdef _WIN32
+    _setmode(_fileno(stdin), O_BINARY);
+  #endif
+}
+
+inline void CheckBinaryStdin(std::istream &strm) {
+  #ifdef _WIN32
+    if (strm.rdbuf() == std::cin.rdbuf()) {
+      _setmode(_fileno(stdin), O_BINARY);
+    }
+  #endif
+}
 }  // namespace fst
 
 #endif  // FST_UTIL_H_

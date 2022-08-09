@@ -26,6 +26,8 @@
 
 #include <fst/types.h>
 #include <fst/windows_defs.inc>
+#include <fst/arc.h>
+
 
 namespace fst {
 
@@ -82,8 +84,17 @@ class CompactArcCompactor;
 // FST templates.
 
 template <class Arc, class Compactor, class CacheStore = DefaultCacheStore<Arc>>
-class CompactFst;
+	class CompactFst;
 
+// The Unsigned type is used to represent indices into the compact arc array.
+template <class Arc, class ArcCompactor, class Unsigned = uint32,
+          class CompactStore =
+              CompactArcStore<typename ArcCompactor::Element, Unsigned>,
+          class CacheStore = DefaultCacheStore<Arc>>
+using CompactArcFst =
+    CompactFst<Arc, CompactArcCompactor<ArcCompactor, Unsigned, CompactStore>,
+               CacheStore>;
+			   
 // The Unsigned type is used to represent indices into the compact arc array.
 template <class Arc, class ArcCompactor, class Unsigned = uint32,
           class CompactStore =
@@ -108,10 +119,10 @@ class Fst;
 template <class Arc>
 class MutableFst;
 
-template <class Arc, class Allocator = std::allocator<Arc>>
+template <class A, class Allocator = std::allocator<A>>
 class VectorState;
 
-template <class Arc, class State = VectorState<Arc>>
+template <class A, class State = VectorState<A>>
 class VectorFst;
 
 template <class Arc, class U = ssize_t>
@@ -125,7 +136,7 @@ class ArcSortFst;
 template <class Arc>
 class ClosureFst;
 
-template <class Arc, class Store = DefaultCacheStore<Arc>>
+template <class A, class Store = DefaultCacheStore<A>>
 class ComposeFst;
 
 template <class Arc>
@@ -155,8 +166,8 @@ class RandGenFst;
 template <class Arc>
 class RelabelFst;
 
-template <class Arc, class StateTable = DefaultReplaceStateTable<Arc>,
-          class Store = DefaultCacheStore<Arc>>
+template <class A, class StateTable = DefaultReplaceStateTable<A>,
+          class Store = DefaultCacheStore<A>>
 class ReplaceFst;
 
 template <class Arc>

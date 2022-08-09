@@ -68,7 +68,7 @@ class AddOnPair {
 
   std::shared_ptr<A2> SharedSecond() const { return a2_; }
 
-  static AddOnPair *Read(std::istream &istrm, const FstReadOptions &opts) {
+  static AddOnPair<A1, A2> *Read(std::istream &istrm, const FstReadOptions &opts) {
     bool have_addon1 = false;
     ReadType(istrm, &have_addon1);
     std::unique_ptr<A1> a1;
@@ -79,7 +79,7 @@ class AddOnPair {
     std::unique_ptr<A1> a2;
     if (have_addon2) a2 = fst::WrapUnique(A2::Read(istrm, opts));
 
-    return new AddOnPair(std::move(a1), std::move(a2));
+    return new AddOnPair<A1, A2>(std::move(a1), std::move(a2));
   }
 
   bool Write(std::ostream &ostrm, const FstWriteOptions &opts) const {
@@ -165,7 +165,7 @@ class AddOnImpl : public FstImpl<typename FST::Arc> {
 
   size_t NumStates() const { return fst_.NumStates(); }
 
-  static AddOnImpl *Read(std::istream &strm, const FstReadOptions &opts) {
+  static AddOnImpl<FST, T> *Read(std::istream &strm, const FstReadOptions &opts) {
     FstReadOptions nopts(opts);
     FstHeader hdr;
     if (!nopts.header) {
@@ -173,7 +173,7 @@ class AddOnImpl : public FstImpl<typename FST::Arc> {
       nopts.header = &hdr;
     }
     // Using `new` to access private constructor for `AddOnImpl`.
-    auto impl = fst::WrapUnique(new AddOnImpl(nopts.header->FstType()));
+    auto impl = fst::WrapUnique(new AddOnImpl<FST, T>(nopts.header->FstType()));
     if (!impl->ReadHeader(strm, nopts, kMinFileVersion, &hdr)) return nullptr;
     impl.reset();
     int32 magic_number = 0;
@@ -193,7 +193,7 @@ class AddOnImpl : public FstImpl<typename FST::Arc> {
       t = std::shared_ptr<T>(T::Read(strm, fopts));
       if (!t) return nullptr;
     }
-    return new AddOnImpl(*fst, nopts.header->FstType(), t);
+    return new AddOnImpl<FST, T>(*fst, nopts.header->FstType(), t);
   }
 
   bool Write(std::ostream &strm, const FstWriteOptions &opts) const {

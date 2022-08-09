@@ -33,7 +33,7 @@
 #include <fst/shortest-distance.h>
 #include <fst/vector-fst.h>
 
-
+//using namespace std;
 namespace fst {
 
 // Test if two FSTs are stochastically equivalent by randomly generating
@@ -120,7 +120,7 @@ bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2, int32 npath,
 template <class Arc>
 bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2, int32 npath,
                     float delta = kDelta, uint64 seed = std::random_device()(),
-                    int32 max_length = std::numeric_limits<int32>::max(),
+                    int32 max_length = (numeric_limits<int32>::max)(),
                     bool *error = nullptr) {
   const UniformArcSelector<Arc> uniform_selector(seed);
   const RandGenOptions<UniformArcSelector<Arc>> opts(uniform_selector,

@@ -20,7 +20,7 @@
 #ifndef FST_EXPANDED_FST_H_
 #define FST_EXPANDED_FST_H_
 
-#include <sys/types.h>
+#include <fst/types.h>
 
 #include <istream>
 #include <memory>

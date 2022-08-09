@@ -120,6 +120,7 @@ class MutableFst : public ExpandedFst<A> {
 
   // Reads a MutableFst from an input stream, returning nullptr on error.
   static MutableFst *Read(std::istream &strm, const FstReadOptions &opts) {
+	CheckBinaryStdin(strm);					   
     FstReadOptions ropts(opts);
     FstHeader hdr;
     if (ropts.header) {
@@ -160,6 +161,7 @@ class MutableFst : public ExpandedFst<A> {
         }
         return Read(strm, FstReadOptions(source));
       } else {
+		PrepareBinaryStdin();					 
         return Read(std::cin, FstReadOptions("standard input"));
       }
     } else {  // Converts to 'convert_type' if not mutable.

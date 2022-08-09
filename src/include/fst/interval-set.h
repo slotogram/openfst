@@ -28,7 +28,7 @@
 
 #include <fst/util.h>
 
-
+using namespace std;
 namespace fst {
 
 // Half-open integral interval [a, b) of signed integers of type T.
@@ -263,8 +263,8 @@ void IntervalSet<T, Store>::Intersect(const IntervalSet<T, Store> &iset,
     } else if (it2->end <= it1->begin) {
       ++it2;
     } else {
-      ointervals->emplace_back(std::max(it1->begin, it2->begin),
-                               std::min(it1->end, it2->end));
+      ointervals->emplace_back(max(it1->begin, it2->begin),
+                               min(it1->end, it2->end));
       count += ointervals->back().end - ointervals->back().begin;
       if (it1->end < it2->end) {
         ++it1;
@@ -287,7 +287,7 @@ void IntervalSet<T, Store>::Complement(T maxval,
   Interval interval;
   interval.begin = 0;
   for (auto it = intervals_.begin(); it != intervals_.end(); ++it) {
-    interval.end = std::min(it->begin, maxval);
+    interval.end = min(it->begin, maxval);
     if ((interval.begin) < (interval.end)) {
       ointervals->push_back(interval);
       count += interval.end - interval.begin;

@@ -474,6 +474,7 @@ VectorFstImpl<S>::VectorFstImpl(const Fst<Arc> &fst) {
 template <class S>
 VectorFstImpl<S> *VectorFstImpl<S>::Read(std::istream &strm,
                                          const FstReadOptions &opts) {
+  CheckBinaryStdin(strm);						 
   auto impl = fst::make_unique<VectorFstImpl>();
   FstHeader hdr;
   if (!impl->ReadHeader(strm, opts, kMinFileVersion, &hdr)) return nullptr;
@@ -629,6 +630,7 @@ template <class Arc, class State>
 template <class FST>
 bool VectorFst<Arc, State>::WriteFst(const FST &fst, std::ostream &strm,
                                      const FstWriteOptions &opts) {
+  CheckBinaryStdout(strm);						  
   static constexpr int file_version = 2;
   bool update_header = true;
   FstHeader hdr;

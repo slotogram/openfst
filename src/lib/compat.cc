@@ -13,6 +13,7 @@
 // Google compatibility definitions.
 
 #include <fst/compat.h>
+#include <cctype>
 
 #include <algorithm>
 #include <cstdlib>

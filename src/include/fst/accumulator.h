@@ -32,7 +32,7 @@
 #include <fst/dfs-visit.h>
 #include <fst/expanded-fst.h>
 #include <fst/replace.h>
-
+//using namespace std;
 namespace fst {
 
 // This class accumulates arc weights using the semiring Plus().
@@ -277,7 +277,7 @@ class FastLogAccumulator {
     }
     // Computes sum before pre-stored weights.
     if (begin < stored_begin) {
-      const auto pos_end = std::min(stored_begin, end);
+      const auto pos_end = min(stored_begin, end);
       aiter->Seek(begin);
       for (auto pos = begin; pos < pos_end; aiter->Next(), ++pos) {
         sum = LogPlus(sum, aiter->Value().weight);
@@ -300,7 +300,7 @@ class FastLogAccumulator {
     }
     // Computes sum after pre-stored weights.
     if (stored_end < end) {
-      const auto pos_start = std::max(stored_begin, stored_end);
+      const auto pos_start = max(stored_begin, stored_end);
       aiter->Seek(pos_start);
       for (auto pos = pos_start; pos < end; aiter->Next(), ++pos) {
         sum = LogPlus(sum, aiter->Value().weight);
