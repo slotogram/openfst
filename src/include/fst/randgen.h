@@ -209,7 +209,7 @@ class ArcSampler {
   // The max_length argument may be interpreted (or ignored) by a selector as
   // it chooses. This generic version interprets this literally.
   ArcSampler(const Fst<Arc> &fst, const Selector &selector,
-             int32 max_length = std::numeric_limits<int32>::max())
+             int32 max_length = (std::numeric_limits<int32>::max)())
       : fst_(fst), selector_(selector), max_length_(max_length) {}
 
   // Allow updating FST argument; pass only if changed.
@@ -288,7 +288,7 @@ void OneMultinomialSample(const std::vector<double> &probs,
       num_sampled = d(*rng);
     }
     if (num_sampled != 0) (*result)[i] = num_sampled;
-    num_to_sample -= std::min(num_sampled, num_to_sample);
+    num_to_sample -= (std::min)(num_sampled, num_to_sample);
   }
 }
 
@@ -303,7 +303,7 @@ class ArcSampler<Arc, FastLogProbArcSelector<Arc>> {
   using Selector = FastLogProbArcSelector<Arc>;
 
   ArcSampler(const Fst<Arc> &fst, const Selector &selector,
-             int32 max_length = std::numeric_limits<int32>::max())
+             int32 max_length = (std::numeric_limits<int32>::max)())
       : fst_(fst),
         selector_(selector),
         max_length_(max_length),
@@ -369,7 +369,7 @@ class ArcSampler<Arc, FastLogProbArcSelector<Arc>> {
     if (fst_.Final(rstate.state_id) != Weight::Zero()) {
       p_.push_back(exp(-to_log_weight_(fst_.Final(rstate.state_id)).Value()));
     }
-    if (rstate.nsamples < std::numeric_limits<RNG::result_type>::max()) {
+    if (rstate.nsamples < (std::numeric_limits<RNG::result_type>::max)()) {
       OneMultinomialSample(p_, rstate.nsamples, &sample_map_, &rng_);
     } else {
       for (size_t i = 0; i < p_.size(); ++i) {
@@ -661,7 +661,7 @@ struct RandGenOptions {
   bool remove_total_weight;  // Remove total weight when output is weighted?
 
   explicit RandGenOptions(const Selector &selector,
-                          int32 max_length = std::numeric_limits<int32>::max(),
+                          int32 max_length = (std::numeric_limits<int32>::max)(),
                           int32 npath = 1, bool weighted = false,
                           bool remove_total_weight = false)
       : selector(selector),

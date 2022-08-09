@@ -32,7 +32,7 @@
 #include <fst/dfs-visit.h>
 #include <fst/expanded-fst.h>
 #include <fst/replace.h>
-//using namespace std;
+using namespace std;
 namespace fst {
 
 // This class accumulates arc weights using the semiring Plus().

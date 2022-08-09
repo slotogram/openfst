@@ -270,22 +270,22 @@ using IntFilterState = IntegerFilterState<int>;
 template <class FST>
 class Matcher;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class NullComposeFilter;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class TrivialComposeFilter;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class SequenceComposeFilter;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class AltSequenceComposeFilter;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class MatchComposeFilter;
 
-template <class Matcher1, class Matcher2 = Matcher1>
+template <class M1, class M2 = M1>
 class NoMatchComposeFilter;
 
 }  // namespace fst

@@ -186,19 +186,19 @@ class FstClassImpl : public FstClassImplBase {
   // Signals failure by returning size_t max.
   size_t NumArcs(int64 s) const final {
     return ValidStateId(s) ? impl_->NumArcs(s)
-                           : std::numeric_limits<size_t>::max();
+                           : (std::numeric_limits<size_t>::max)();
   }
 
   // Signals failure by returning size_t max.
   size_t NumInputEpsilons(int64 s) const final {
     return ValidStateId(s) ? impl_->NumInputEpsilons(s)
-                           : std::numeric_limits<size_t>::max();
+                           : (std::numeric_limits<size_t>::max)();
   }
 
   // Signals failure by returning size_t max.
   size_t NumOutputEpsilons(int64 s) const final {
     return ValidStateId(s) ? impl_->NumOutputEpsilons(s)
-                           : std::numeric_limits<size_t>::max();
+                           : (std::numeric_limits<size_t>::max)();
   }
 
   // Warning: calling this method casts the FST to a mutable FST.

@@ -9,6 +9,11 @@
   </PropertyGroup>
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <Import Project="../openfst.props" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <ItemGroup>
     <ClCompile Include="*.cc" />
